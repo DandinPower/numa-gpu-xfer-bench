@@ -7,8 +7,9 @@
 #include <cstring>
 #include <algorithm>
 #include <sstream>
-#include <numa.h>
 #include <cuda_runtime.h>
+
+const size_t DMA_ALIGNMENT = 4096;
 
 #define CUDA_CHECK(call) \
     do { \

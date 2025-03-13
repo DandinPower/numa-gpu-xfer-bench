@@ -1,6 +1,6 @@
 CXX = g++
 CXXFLAGS = -std=c++11 -Wall -Iinclude -I/usr/local/cuda/include
-LDFLAGS = -lnuma -lcudart -L/usr/local/cuda/lib64
+LDFLAGS = -lcudart -L/usr/local/cuda/lib64
 SRCS = src/main.cpp src/memory.cpp
 BUILDS = build
 OBJS = $(patsubst src/%.cpp,$(BUILDS)/%.o,$(SRCS))

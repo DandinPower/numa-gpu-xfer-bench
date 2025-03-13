@@ -1,33 +1,22 @@
 #include "memory.h"
 
-void* allocate_cpu_buffer(size_t size, const std::vector<int>& interleave_nodes, bool pin_memory) {
-    struct bitmask* nodemask = numa_allocate_nodemask();
-    if (!nodemask) {
-        std::cerr << "Failed to allocate nodemask." << std::endl;
-        exit(EXIT_FAILURE);
-    }
-    numa_bitmask_clearall(nodemask);
-    int max_node = numa_max_node();
-    for (auto node : interleave_nodes) {
-        if (node < 0 || node > max_node) continue;
-        numa_bitmask_setbit(nodemask, node);
-    }
-    void* ptr = numa_alloc_interleaved_subset(size, nodemask);
-    numa_free_nodemask(nodemask);
-    if (ptr == nullptr) {
-        std::cerr << "Failed to allocate memory." << std::endl;
+void* allocate_cpu_buffer(size_t size, bool pin_memory) {
+    void* ptr = nullptr;
+    int ret = posix_memalign(&ptr, DMA_ALIGNMENT, size);
+    if (ret != 0) {
+        std::cerr << "Failed to allocate aligned memory. posix_memalign returned: " << std::to_string(ret) << std::endl;
         exit(EXIT_FAILURE);
     }
     std::memset(ptr, 0, size);
     if (pin_memory) {
-        CUDA_CHECK(cudaHostRegister(ptr, size, cudaHostRegisterMapped));
+        CUDA_CHECK(cudaHostRegister(ptr, size, cudaHostRegisterPortable));
     }
     return ptr;
 }
 
-void free_cpu_buffer(void* ptr, size_t size, bool pin_memory) {
+void free_cpu_buffer(void* ptr, bool pin_memory) {
     if (pin_memory) {
         CUDA_CHECK(cudaHostUnregister(ptr));
     }
-    numa_free(ptr, size);
+    free(ptr);
 }
