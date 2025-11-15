@@ -30,6 +30,7 @@ The weighted interleave feature requires additional setup:
 
 2. **Latest `numactl`**: Weighted interleave requires `numactl` ≥ 2.0.19 (APT provides 2.0.18), so compile it manually:
    ```bash
+   sudo apt install autoconf automake libtool # tools required to compile numactl
    sudo apt remove numactl libnuma-dev
    git clone https://github.com/numactl/numactl.git
    cd numactl
@@ -39,6 +40,7 @@ The weighted interleave feature requires additional setup:
    make
    make test
    sudo make install
+   sudo ldconfig
    ```
    Verify the version with:
    ```bash
