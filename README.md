@@ -202,3 +202,13 @@ Modify `weighted_interleave_scripts.sh` to adjust:
 - **NUMA Nodes**: Verify valid node indices with `numactl --hardware`.
 - **Pinning**: `--pin_memory 1` improves performance but increases setup overhead.
 - **NUMA Policies**: `numactl` enables flexible memory allocation (e.g., interleave, weighted interleave, node-specific).
+
+## Extensions
+
+The `extension/` directory contains small companion utilities.
+
+1. [**numa-cpu-xfer-bench**](extension/numa-cpu-xfer-bench/README.md)  
+   Wrapper around Intel Memory Latency Checker (MLC) for measuring bandwidth between CPU cores and NUMA node memory. Useful as a CPU only baseline when comparing against GPU transfer results.
+
+2. [**numa-numa-xfer-bench**](extension/numa-numa-xfer-bench/README.md)  
+   Standalone C++ and OpenMP benchmark that measures memory copy bandwidth between different NUMA nodes using `libnuma`. Useful to study pure NUMA to NUMA bandwidth.
